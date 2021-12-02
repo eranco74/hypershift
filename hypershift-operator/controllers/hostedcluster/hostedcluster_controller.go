@@ -1011,6 +1011,10 @@ func reconcileHostedControlPlane(hcp *hyperv1.HostedControlPlane, hcluster *hype
 
 	// Pass through Platform spec.
 	hcp.Spec.Platform = *hcluster.Spec.Platform.DeepCopy()
+	if hcluster.Spec.Platform.Type == hyperv1.AgentPlatform {
+		// Agent platform uses None platform for the hcp.
+		hcp.Spec.Platform.Type = hyperv1.NonePlatform
+	}
 
 	// always reconcile the release image (facilitates rolling forward)
 	hcp.Spec.ReleaseImage = hcluster.Spec.Release.Image
@@ -2226,6 +2230,11 @@ func reconcileCAPIManagerClusterRole(role *rbacv1.ClusterRole) error {
 			APIGroups: []string{"apiextensions.k8s.io"},
 			Resources: []string{"customresourcedefinitions"},
 			Verbs:     []string{"get", "list", "watch"},
+		},
+		{
+			APIGroups: []string{"capi-provider.agent-install.openshift.io"},
+			Resources: []string{"*"},
+			Verbs:     []string{"*"},
 		},
 	}
 	return nil
