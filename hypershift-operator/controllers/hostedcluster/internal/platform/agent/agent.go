@@ -56,6 +56,7 @@ func (p Agent) ReconcileCAPIInfraCR(ctx context.Context, c client.Client, create
 }
 
 func (p Agent) CAPIProviderDeploymentSpec(hcluster *hyperv1.HostedCluster, tokenMinterImage string) (*appsv1.DeploymentSpec, error) {
+	// It is expected that cluster-api-provider-agent and the Infrastructure Operator are installed as a prerequisite
 	return nil, nil
 }
 
