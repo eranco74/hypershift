@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"fmt"
+	"github.com/openshift/hypershift/cmd/cluster/agent"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -187,6 +188,8 @@ func createCluster(ctx context.Context, hc *hyperv1.HostedCluster, opts *core.Cr
 		return none.CreateCluster(ctx, opts)
 	case hyperv1.KubevirtPlatform:
 		return kubevirt.CreateCluster(ctx, opts)
+	case hyperv1.AgentPlatform:
+		return agent.CreateCluster(ctx, opts)
 	default:
 		return fmt.Errorf("unsupported platform")
 	}
@@ -210,7 +213,7 @@ func destroyCluster(ctx context.Context, hc *hyperv1.HostedCluster, createOpts *
 			ClusterGracePeriod: 15 * time.Minute,
 		}
 		return aws.DestroyCluster(ctx, opts)
-	case hyperv1.NonePlatform, hyperv1.KubevirtPlatform:
+	case hyperv1.NonePlatform, hyperv1.KubevirtPlatform, hyperv1.AgentPlatform:
 		opts := &core.DestroyOptions{
 			Namespace:          hc.Namespace,
 			Name:               hc.Name,
