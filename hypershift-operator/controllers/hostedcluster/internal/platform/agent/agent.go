@@ -130,33 +130,13 @@ func (p Agent) ReconcileCredentials(ctx context.Context, c client.Client, create
 	hcluster *hyperv1.HostedCluster,
 	controlPlaneNamespace string) error {
 
-	role := &rbacv1.Role{
-		ObjectMeta: metav1.ObjectMeta{
-			Namespace: hcluster.Spec.Platform.Agent.AgentNamespace,
-			Name:      fmt.Sprintf("%s-%s", CredentialsRBACPrefix, controlPlaneNamespace),
-		},
-	}
-	_, err := createOrUpdate(ctx, c, role, func() error {
-		role.Rules = []rbacv1.PolicyRule{
-			{
-				APIGroups: []string{"agent-install.openshift.io"},
-				Resources: []string{"agents"},
-				Verbs:     []string{"*"},
-			},
-		}
-		return nil
-	})
-	if err != nil {
-		return fmt.Errorf("failed to reconcile Agent Role: %w", err)
-	}
-
 	roleBinding := &rbacv1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: hcluster.Spec.Platform.Agent.AgentNamespace,
 			Name:      fmt.Sprintf("%s-%s", CredentialsRBACPrefix, controlPlaneNamespace),
 		},
 	}
-	_, err = createOrUpdate(ctx, c, roleBinding, func() error {
+	_, err := createOrUpdate(ctx, c, roleBinding, func() error {
 		roleBinding.Subjects = []rbacv1.Subject{
 			{
 				Kind:      "ServiceAccount",
@@ -167,7 +147,7 @@ func (p Agent) ReconcileCredentials(ctx context.Context, c client.Client, create
 		roleBinding.RoleRef = rbacv1.RoleRef{
 			APIGroup: "rbac.authorization.k8s.io",
 			Kind:     "Role",
-			Name:     fmt.Sprintf("%s-%s", CredentialsRBACPrefix, controlPlaneNamespace),
+			Name:     "capi-provider-role",
 		}
 		return nil
 	})

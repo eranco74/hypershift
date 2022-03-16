@@ -483,6 +483,8 @@ type PlatformSpec struct {
 type AgentPlatformSpec struct {
 	// AgentNamespace is the namespace where to search for Agents for this cluster
 	AgentNamespace string `json:"agentNamespace"`
+
+	AgentRoleName string `json:"agentRoleName"`
 }
 
 // IBMCloudPlatformSpec defines IBMCloud specific settings for components
