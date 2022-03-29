@@ -52,11 +52,15 @@ func CreateCluster(t *testing.T, ctx context.Context, client crclient.Client, op
 	err := client.Create(ctx, namespace)
 	g.Expect(err).NotTo(HaveOccurred(), "failed to create namespace")
 
+	name := opts.Name
+	if name == "" {
+		name = SimpleNameGenerator.GenerateName("example-")
+	}
 	// Build the skeletal HostedCluster based on the provided platform.
 	hc := &hyperv1.HostedCluster{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace.Name,
-			Name:      SimpleNameGenerator.GenerateName("example-"),
+			Name:      name,
 		},
 		Spec: hyperv1.HostedClusterSpec{
 			Platform: hyperv1.PlatformSpec{

@@ -132,6 +132,7 @@ func TestAgentCreateCluster(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred(), "failed to get k8s client")
 
 	clusterOpts := globalOpts.DefaultClusterOptions()
+	clusterOpts.Name = "hypershift"
 	hostedCluster := e2eutil.CreateCluster(t, ctx, client, &clusterOpts, hyperv1.AgentPlatform, globalOpts.ArtifactDir)
 
 	// Get the newly created nodepool
